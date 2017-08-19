@@ -81,7 +81,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 {
 	if(checkpointid == cpgo)
 	{
-		GameTextForPlayer(playerid, "~g~/fish", 1000, 3);
+		GameTextForPlayer(playerid, "~g~You found it", 1000, 3);
 		IsFishing[playerid] = true;
 		DestroyDynamicCP(cpgo);
 		RemovePlayerMapIcon(playerid, 1);
@@ -89,8 +89,9 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 	}	
 	else if(checkpointid == cpunload)
 	{
-		GameTextForPlayer(playerid, "~g~/unloadfish", 1000, 3);
+		GameTextForPlayer(playerid, "~g~You found it", 1000, 3);
 		DestroyDynamicCP(cpunload);
+		IsFishing[playerid] = false;
 		RemovePlayerMapIcon(playerid, 2);
 		return 1;
 	}	
@@ -100,6 +101,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == 987)
 	{
+		if(!response) return 1;
 		if(Rod[playerid] != 0) return SendClientMessage(playerid, COLOR_RED, "You already have a Rod");
 		if(listitem == 0)
 		{
@@ -192,6 +194,7 @@ CMD:fish(playerid, params[])
 			if(Rod[playerid] == 1 && Weight[playerid] > Rod_1_Weight || Rod[playerid] == 2 && Weight[playerid] > Rod_2_Weight || Rod[playerid] == 3 && Weight[playerid] > Rod_3_Weight)
 			{
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Your rod is full, Go to unload point to unload fish");
+				IsFishing[playerid] = false;
 				cpunload = CreateDynamicCP(2473.6323,-2710.8103,3.1963, 1.8);
 				SetPlayerMapIcon(playerid, 1, 2473.6323,-2710.8103,3.1963, 0, 0);
 				return 1;
@@ -206,6 +209,7 @@ CMD:fish(playerid, params[])
 			if(Rod[playerid] == 1 && Weight[playerid] > Rod_1_Weight || Rod[playerid] == 2 && Weight[playerid] > Rod_2_Weight || Rod[playerid] == 3 && Weight[playerid] > Rod_3_Weight)
 			{
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Your rod is full, Go to unload point to unload fish");
+				IsFishing[playerid] = false;
 				cpunload = CreateDynamicCP(2473.6323,-2710.8103,3.1963, 1.8);
 				SetPlayerMapIcon(playerid, 1, 2473.6323,-2710.8103,3.1963, 0, 0);
 				return 1;
@@ -220,6 +224,7 @@ CMD:fish(playerid, params[])
 			if(Rod[playerid] == 1 && Weight[playerid] > Rod_1_Weight || Rod[playerid] == 2 && Weight[playerid] > Rod_2_Weight || Rod[playerid] == 3 && Weight[playerid] > Rod_3_Weight)
 			{
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, "Your rod is full, Go to unload point to unload fish");
+				IsFishing[playerid] = false;
 				cpunload = CreateDynamicCP(2473.6323,-2710.8103,3.1963, 1.8);
 				SetPlayerMapIcon(playerid, 1, 2473.6323,-2710.8103,3.1963, 0, 0);
 				return 1;
