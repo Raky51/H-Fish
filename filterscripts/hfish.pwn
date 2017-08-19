@@ -29,9 +29,7 @@
 
 #define Rod_1_Weight 1000
 #define Rod_2_Weight 700
-#define Rod_3_Weight 500	
-#define PRESSED(%0) \
-	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))			
+#define Rod_3_Weight 500		
 //--------------------------------------------------
 new bool:IsFishing[MAX_PLAYERS];
 new Rod[MAX_PLAYERS];
@@ -153,14 +151,6 @@ public OnPlayerDeath(playerid)
 	Rod[playerid] = 0;
 	Weight[playerid] = 0;
 	IsFishing[playerid] = false;
-	return 1;
-}
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	if(PRESSED(KEY_SECONDARY_ATTACK))
-	{
-		ClearAnimations(playerid);
-	}	
 	return 1;
 }
 //--------------------------------------------------
