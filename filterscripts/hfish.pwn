@@ -30,6 +30,8 @@
 #define Rod_1_Weight 1000
 #define Rod_2_Weight 700
 #define Rod_3_Weight 500	
+#define PRESSED(%0) \
+	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))			
 //--------------------------------------------------
 new bool:IsFishing[MAX_PLAYERS];
 new Rod[MAX_PLAYERS];
@@ -37,7 +39,6 @@ new Weight[MAX_PLAYERS];
 new pickup;
 new cpgo;
 new cpunload;
-
 //--------------------------------------------------
 #define 		COLOR_WHITE 		0xFFFFFFAA
 #define 		COLOR_BLACK 		0x000000FF
@@ -59,6 +60,7 @@ new cpunload;
 //--------------------------------------------------
 public OnFilterScriptInit()
 {
+	Create3DTextLabel("Rods buying center", COLOR_LIGHTBLUE, 359.3320,-2032.2393,7.8359, 30.0, 0);
 	pickup = CreatePickup(1239, 2, 359.3320,-2032.2393,7.8359);
 	print("\nH-Fishing system has been loaded successfully\n");
 	return 1;
@@ -83,6 +85,7 @@ public OnPlayerEnterDynamicCP(playerid, checkpointid)
 	{
 		GameTextForPlayer(playerid, "~g~You found it", 1000, 3);
 		IsFishing[playerid] = true;
+		ApplyAnimation(playerid,"SWORD","sword_block",50.0 ,0,1,0,1,1);
 		DestroyDynamicCP(cpgo);
 		RemovePlayerMapIcon(playerid, 1);
 		return 1;
@@ -135,6 +138,7 @@ public OnPlayerConnect(playerid)
 	Rod[playerid] = 0;
 	Weight[playerid] = 0;
 	IsFishing[playerid] = false;
+	ApplyAnimation(playerid, "SWORD", "null", 50.0 ,0,1,0,1,1);
 	return 1;
 }
 public OnPlayerDisconnect(playerid, reason)
@@ -149,6 +153,14 @@ public OnPlayerDeath(playerid)
 	Rod[playerid] = 0;
 	Weight[playerid] = 0;
 	IsFishing[playerid] = false;
+	return 1;
+}
+public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(PRESSED(KEY_SECONDARY_ATTACK))
+	{
+		ClearAnimations(playerid);
+	}	
 	return 1;
 }
 //--------------------------------------------------
@@ -183,9 +195,14 @@ CMD:fish(playerid, params[])
 	new string[56];
 	if(IsFishing[playerid] == false) return SendClientMessage(playerid, COLOR_RED, "You are not in fishing job");
 	if(Rod[playerid] == 0) return SendClientMessage(playerid, COLOR_RED, "You don't have a rod !");
-	new rand = randomEx(30, 80);
+	new rand = randomEx(0, 80);
 	switch (rand)
 	{
+		case 0 .. 29:
+		{
+			SendClientMessage(playerid, COLOR_PURPLE, "You haven't caught anything, try again");
+			return 1;
+		}
 		case 30 .. 49:
 		{
 			format(string, 56, "*You have caught a Salmon, it's weight is %iKG", rand);
@@ -277,6 +294,16 @@ CMD:buyrod(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_RED, "You are not near the Rod buy center");
 	}
+	return 1;
+}
+CMD:fishinghelp(playerid, params[])
+{
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "----------------------------------------");
+	SendClientMessage(playerid, COLOR_GREEN, "/gofish - Get the fishing job.");
+	SendClientMessage(playerid, COLOR_GREEN, "/fish - Throw the rod in the water and catch a fish");
+	SendClientMessage(playerid, COLOR_GREEN, "/unloadfish - Unload the fish in unload point");
+	SendClientMessage(playerid, COLOR_GREEN, "/myfish - Check your fish");
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "----------------------------------------");
 	return 1;
 }
 stock randomEx(min, max)
